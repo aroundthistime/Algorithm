@@ -2,22 +2,22 @@
  * @link https://leetcode.com/problems/longest-substring-without-repeating-characters/
  */
 function lengthOfLongestSubstring(s: string): number {
-  if (!s.length) return 0;
+  if (s.length <= 1) return s.length;
 
-  let answer = 1;
-  let currentSubstrWithoutDuplication = s[0];
+  let answer = 0;
+  let left = 0;
+  const letterSet = new Set<string>();
 
-  for (let i = 1; i < s.length; i++) {
-      const letter = s[i];
+  for (let right = 0; right < s.length; right++) {
+    const letter = s[right];
+    
+    while (letterSet.has(letter)) {
+      letterSet.delete(s[left]);
+      left++;
+    }
 
-      const letterIndex = currentSubstrWithoutDuplication.indexOf(letter)
-      if (letterIndex > -1) {
-          answer = Math.max(answer, currentSubstrWithoutDuplication.length);
-          currentSubstrWithoutDuplication = currentSubstrWithoutDuplication.slice(letterIndex + 1) + letter;
-      } else {
-          currentSubstrWithoutDuplication += letter;
-      }
+    letterSet.add(letter);
+    answer = Math.max(answer, right - left + 1)
   }
-  answer = Math.max(answer, currentSubstrWithoutDuplication.length);
-  return answer
+  return answer;
 };
