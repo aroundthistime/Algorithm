@@ -4,6 +4,8 @@
 function coinChange(coins: number[], amount: number): number {
   const dp = {};
 
+  coins.sort((a, b) => a - b);
+
   const solve = (moneyToMake: number) => {
       if (dp[moneyToMake] !== undefined) {
           return dp[moneyToMake];
@@ -13,14 +15,17 @@ function coinChange(coins: number[], amount: number): number {
           return 0;
       }
 
-      const minCoinCount = Math.min(...coins.map(coin => {
+      let minCoinCount = Infinity;
+
+      for (const coin of coins) {
           const leftMoney = moneyToMake - coin;
           if (leftMoney >= 0) {
-              return solve(leftMoney) + 1;
+              const coinCount = solve(leftMoney) + 1;
+              minCoinCount = Math.min(minCoinCount, coinCount)
           } else {
-              return Infinity;
+              break;
           }
-      }));
+      }
 
       dp[moneyToMake] = minCoinCount;
       return minCoinCount;
