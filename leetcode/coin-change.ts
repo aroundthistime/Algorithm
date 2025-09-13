@@ -2,35 +2,14 @@
  * @link https://leetcode.com/problems/coin-change/
  */
 function coinChange(coins: number[], amount: number): number {
-  const dp = {};
-
-  coins.sort((a, b) => a - b);
-
-  const solve = (moneyToMake: number) => {
-      if (dp[moneyToMake] !== undefined) {
-          return dp[moneyToMake];
+  // Array.fill is way faster than Array.from + initializer callback
+  const dp = new Array(amount+1).fill(Infinity);
+  dp[0] = 0;
+  for (const coin of coins) {
+      for (let i = coin; i <= amount; i++) {
+          dp[i] = Math.min(dp[i], 1 + dp[i - coin]);
       }
-
-      if (moneyToMake === 0) {
-          return 0;
-      }
-
-      let minCoinCount = Infinity;
-
-      for (const coin of coins) {
-          const leftMoney = moneyToMake - coin;
-          if (leftMoney >= 0) {
-              const coinCount = solve(leftMoney) + 1;
-              minCoinCount = Math.min(minCoinCount, coinCount)
-          } else {
-              break;
-          }
-      }
-
-      dp[moneyToMake] = minCoinCount;
-      return minCoinCount;
   }
 
-  const minRequiredCoin = solve(amount);
-  return minRequiredCoin === Infinity ? -1 : minRequiredCoin;
+  return dp[amount] === Infinity ? -1 : dp[amount];
 };
