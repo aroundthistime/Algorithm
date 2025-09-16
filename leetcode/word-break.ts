@@ -17,10 +17,11 @@ function wordBreak(s: string, wordDict: string[]): boolean {
       }
 
       const canBeSegmented = wordDict.some(word => {
-          const index = str.indexOf(word);
-          if (index === -1) return false;
+          if (str.startsWith(word)) {
+              return solve(str.slice(word.length))
+          }
 
-          return solve(str.slice(0, index)) && solve(str.slice(index + word.length))
+          return false;
       });
 
       canBeSegmentedMap.set(str, canBeSegmented);
